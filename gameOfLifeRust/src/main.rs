@@ -11,7 +11,12 @@ Current issues:
 
 use std::time::Duration;
 use std::io;
-use tui::{backend::CrosstermBackend, Terminal};
+use tui::{
+    backend::CrosstermBackend,
+    widgets::{Widget, Block, Borders},
+    layout::{Layout, Constraint, Direction},
+    Terminal
+};
 
 //Takes vec of live cells and coordinates of one cell
 fn get_number_live_neighbors(live_cells: &Vec<[i32; 2]>, row: i32, col: i32) -> i32 {
@@ -84,14 +89,14 @@ fn update(live_cells: &mut Vec<[i32; 2]>, board_size: i32) -> Vec<[i32; 2]> {
         live_cells.push(cell);
     }
 
-    print_board(live_cells, board_size);
+    //print_board(live_cells, board_size);
 
     std::thread::sleep(Duration::new(1,0));
 
     live_cells.to_vec()
 }
 
-fn main() {
+fn main() -> Result<(), io::Error>  {
     let board_size = 40;
 
     let mut live_cells: Vec<[i32; 2]> = Vec::new();
@@ -103,31 +108,27 @@ fn main() {
     live_cells.push([2,3]);
     live_cells.push([3,2]);
 
-    print_board(&live_cells, board_size);
+    //print_board(&live_cells, board_size);
 
     loop {
-    // let mut new_live_cells: Vec<[i32; 2]> = Vec::new();
-    // for row in 0..board_size {
-    //     for column in 0..board_size {
-    //         let number_of_live_neighbors = get_number_live_neighbors(&live_cells, row, column);
-    //         let is_alive = is_alive(&live_cells, row, column);
-    //         let should_live = should_live(number_of_live_neighbors, is_alive);
-    //         if should_live {
-    //             let current_coords: [i32; 2] = [row,column];
-    //             new_live_cells.push(current_coords);
-    //         }
-    //     }
-    // }
-    //
-    // live_cells.clear();
-    // for cell in new_live_cells {
-    //     live_cells.push(cell);
-    // }
-    //
-    // print_board(&live_cells, board_size);
-    //
-    // std::thread::sleep(Duration::new(1,0));
-    let live_cells = update(&mut live_cells, board_size);
+        let live_cells = update(&mut live_cells, board_size);
+
+
+        let stdout = io::stdout();
+        let backend = CrosstermBackend::new(stdout);
+        let mut terminal = Terminal::new(backend)?;
+
+        terminal.draw(|f| {
+            let size = f.size();
+            let block = Block::default()
+                .title("GAME OF LIFE")
+                .borders(Borders::ALL);
+            f.render_widget(block, size);
+        })?;
 
     }
+
+
+
+    Ok(())
 }
