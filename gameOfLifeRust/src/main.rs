@@ -36,33 +36,20 @@ array:[
 ]
 
 Current issues:
-- Cells on border not counting correctly?
-- Some with 3 neighbors not surviving?
-
-XX....
-..X...
-X.X...
-..XX..
-...X.X
-......
+- Tidying board size variable, etc.
+- Graphics/visualization
 
 */
 
-use std::time::Duration;
+//use std::time::Duration;
 
 //Takes vec of live cells and coordinates of one cell
-fn get_number_live_neighbors(live_cells: Vec<[i32; 2]>, row: i32, col: i32) -> i32 {
-    println!("live_cells {:?}", live_cells); 
+fn get_number_live_neighbors(live_cells: &Vec<[i32; 2]>, row: i32, col: i32) -> i32 {
     let neighbors = [[row-1,col-1], [row,col-1], [row+1,col-1],[row-1,col], [row+1,col],[row-1,col+1], [row,col+1], [row+1,col+1]];
     let mut count = 0;
     for live_cell in live_cells {
         for neighbor in neighbors {
-            if live_cell == neighbor{
-                let lc_r = live_cell[0];
-                let lc_c = live_cell[1];
-                let n_r = neighbor[0];
-                let n_c = neighbor[1];
-                println!("{lc_r},{lc_c} == {n_r},{n_c}");
+            if *live_cell == neighbor{
                 count+=1;
             }
         }
@@ -82,10 +69,10 @@ fn should_live(number_live_neighbors: i32, is_alive: bool) -> bool {
     false
 }
 
-fn is_alive(live_cells: Vec<[i32; 2]>, row: i32, column: i32) -> bool {
+fn is_alive(live_cells: &Vec<[i32; 2]>, row: i32, column: i32) -> bool {
     let coords: [i32; 2] = [row, column];
     for live_cell in live_cells {
-        if live_cell == coords {
+        if *live_cell == coords {
             return true;
         }
     }
@@ -93,10 +80,10 @@ fn is_alive(live_cells: Vec<[i32; 2]>, row: i32, column: i32) -> bool {
     false
 }
 
-fn print_board(live_cells: Vec<[i32; 2]>) {
+fn print_board(live_cells: &Vec<[i32; 2]>) {
     for row in 0..6 {
         for column in 0..6 {
-            if is_alive(live_cells.clone(), row, column) {
+            if is_alive(live_cells, row, column) {
                 print!("X");
             }
             else {
@@ -108,8 +95,6 @@ fn print_board(live_cells: Vec<[i32; 2]>) {
 }
 
 fn main() {
-    println!("Hello, world!");
-    //let mut board = [[0,0,0],[0,0,0],[0,0,0]];
     let mut live_cells: Vec<[i32; 2]> = Vec::new();
     live_cells.push([0,0]);
     live_cells.push([1,0]);
@@ -123,40 +108,31 @@ fn main() {
     live_cells.push([5,5]);
     live_cells.push([6,4]);
 
-    let row = 0;
-    let column = 0;
-    let number_of_live_neighbors = get_number_live_neighbors(live_cells.clone(), row, column);
-    println!("row:{row} col:{column} number_of_live_neighbors:{number_of_live_neighbors}");
+    print_board(&live_cells);
+    println!("");
 
-//     for i in 1..3 {
-//     let mut new_live_cells: Vec<[i32; 2]> = Vec::new();
-//     for row in 0..6 {
-//         for column in 0..6 {
-//             let number_of_live_neighbors = get_number_live_neighbors(live_cells.clone(), row, column);
-//             let is_alive = is_alive(live_cells.clone(), row, column);
-//             let should_live = should_live(number_of_live_neighbors, is_alive);
-//             if should_live {
-//                 println!("row:{row} col:{column} is_alive:{is_alive} number_of_live_neighbors:{number_of_live_neighbors}");
-//                 let current_coords: [i32; 2] = [row,column];
-//                 new_live_cells.push(current_coords);
-//             }
-//         }
-//     }
-//     // let size = new_live_cells.len();
-//     // for cell in new_live_cells {
-//     //     let row = cell[0];
-//     //     let column = cell[1];
-//     //     println!("{row} {column}");
-//     // }
-//
-//     live_cells.clear();
-//     for cell in new_live_cells {
-//         live_cells.push(cell);
-//     }
-//
-//     print_board(live_cells.clone());
-//     println!("");
-//
-//     // std::thread::sleep(Duration::new(2,0));
-//     }
+    for i in 1..3 {
+    let mut new_live_cells: Vec<[i32; 2]> = Vec::new();
+    for row in 0..6 {
+        for column in 0..6 {
+            let number_of_live_neighbors = get_number_live_neighbors(&live_cells, row, column);
+            let is_alive = is_alive(&live_cells, row, column);
+            let should_live = should_live(number_of_live_neighbors, is_alive);
+            if should_live {
+                let current_coords: [i32; 2] = [row,column];
+                new_live_cells.push(current_coords);
+            }
+        }
+    }
+
+    live_cells.clear();
+    for cell in new_live_cells {
+        live_cells.push(cell);
+    }
+
+    print_board(&live_cells);
+    println!("");
+
+    // std::thread::sleep(Duration::new(2,0));
+    }
  }
