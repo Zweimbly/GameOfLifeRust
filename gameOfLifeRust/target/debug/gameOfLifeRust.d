@@ -1,1 +1,1 @@
-/media/zwei/My\ Passport/Repo/gameOfLifeRust/gameOfLifeRust/target/debug/gameOfLifeRust: /media/zwei/My\ Passport/Repo/gameOfLifeRust/gameOfLifeRust/src/main.rs
+/home/nasreen/projects/GameOfLifeRust/gameOfLifeRust/target/debug/gameOfLifeRust: /home/nasreen/projects/GameOfLifeRust/gameOfLifeRust/src/main.rs
