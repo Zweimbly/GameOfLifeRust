@@ -36,12 +36,11 @@ array:[
 ]
 
 Current issues:
-- Tidying board size variable, etc.
 - Graphics/visualization
 
 */
 
-//use std::time::Duration;
+use std::time::Duration;
 
 //Takes vec of live cells and coordinates of one cell
 fn get_number_live_neighbors(live_cells: &Vec<[i32; 2]>, row: i32, col: i32) -> i32 {
@@ -80,41 +79,52 @@ fn is_alive(live_cells: &Vec<[i32; 2]>, row: i32, column: i32) -> bool {
     false
 }
 
-fn print_board(live_cells: &Vec<[i32; 2]>) {
-    for row in 0..6 {
-        for column in 0..6 {
+fn print_board(live_cells: &Vec<[i32; 2]>, board_size: i32) {
+    for row in 0..board_size {
+        for column in 0..board_size {
             if is_alive(live_cells, row, column) {
                 print!("X");
             }
             else {
-                print!(".");
+                print!(" ");
             }
         }
         println!("");
     }
+    println!("");
 }
 
 fn main() {
+    let board_size = 40;
+    
     let mut live_cells: Vec<[i32; 2]> = Vec::new();
-    live_cells.push([0,0]);
-    live_cells.push([1,0]);
+    // live_cells.push([0,0]);
+    // live_cells.push([1,0]);
+    // live_cells.push([1,1]);
+    // live_cells.push([2,1]);
+    // live_cells.push([2,2]);
+
+    // live_cells.push([4,3]);
+    // live_cells.push([4,4]);
+    // live_cells.push([5,4]);
+    // live_cells.push([5,5]);
+    // live_cells.push([6,4]);
+
+    //glider
     live_cells.push([1,1]);
-    live_cells.push([2,1]);
+    live_cells.push([3,1]);
     live_cells.push([2,2]);
+    live_cells.push([2,3]);
+    live_cells.push([3,2]);
 
-    live_cells.push([4,3]);
-    live_cells.push([4,4]);
-    live_cells.push([5,4]);
-    live_cells.push([5,5]);
-    live_cells.push([6,4]);
+    print_board(&live_cells, board_size);
+    
 
-    print_board(&live_cells);
-    println!("");
-
-    for i in 1..3 {
+    //for i in 1..8 {
+    loop {
     let mut new_live_cells: Vec<[i32; 2]> = Vec::new();
-    for row in 0..6 {
-        for column in 0..6 {
+    for row in 0..board_size {
+        for column in 0..board_size {
             let number_of_live_neighbors = get_number_live_neighbors(&live_cells, row, column);
             let is_alive = is_alive(&live_cells, row, column);
             let should_live = should_live(number_of_live_neighbors, is_alive);
@@ -130,9 +140,9 @@ fn main() {
         live_cells.push(cell);
     }
 
-    print_board(&live_cells);
-    println!("");
+    print_board(&live_cells, board_size);
 
-    // std::thread::sleep(Duration::new(2,0));
+    std::thread::sleep(Duration::new(1,0));
+
     }
- }
+}
